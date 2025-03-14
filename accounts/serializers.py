@@ -1,0 +1,30 @@
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+class RegisterationSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
+
+    def validate(self, data):
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError({"password": "Passwords do not match"})
+        return data
+
+    def create(self, validated_data):
+        
+        password = validated_data.pop('password1')
+        validated_data.pop('password2')
+
+        if User.objects.filter(email=validated_data['email']).exists():
+            raise serializers.ValidationError({"email": "Email already exists"})
+        
+        user = User.objects.create(**validated_data)
+        user.set_password(password)  
+        user.is_active = False  
+        user.save()
+        return user
