@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-User = get_user_model()
+from accounts.models import CustomUser as User
 
 class RegisterationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
@@ -25,6 +24,6 @@ class RegisterationSerializer(serializers.ModelSerializer):
         
         user = User.objects.create(**validated_data)
         user.set_password(password)  
-        user.is_active = False  
+        user.is_active = True  
         user.save()
         return user

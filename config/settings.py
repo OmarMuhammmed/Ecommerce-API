@@ -20,6 +20,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Apps
+    'accounts',
+    # Django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,8 +34,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
-    # Apps
-    'accounts',
+    
 ]
 
 MIDDLEWARE = [
@@ -117,6 +119,8 @@ USE_TZ = True
 
 REST_USE_JWT = True
 CSRF_COOKIE_SECURE = True
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 SIMPLE_JWT = {
   "ACCESS_TOKEN_LIFETIME" : timedelta(days= 15),
