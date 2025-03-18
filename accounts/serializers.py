@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from accounts.models import CustomUser as User
+from accounts.models import Profile, Address
+from django_countries.serializers import CountryFieldMixin
 
 class RegisterationSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
@@ -27,3 +29,64 @@ class RegisterationSerializer(serializers.ModelSerializer):
         user.is_active = True  
         user.save()
         return user
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    
+    user = UserProfileSerializer()
+
+    class Meta:
+        model = Profile
+        fields = '__all__'
+    
+
+class ShippingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    """
+    Serializer class to seralize address of type shipping
+
+    For shipping address, automatically set address type to shipping
+    """
+
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Address
+        fields = "__all__"
+        read_only_fields = ("address_type",)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["address_type"] = "S"
+
+        return representation
+
+
+class BillingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
+
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Address
+        fields = "__all__"
+        read_only_fields = ("address_type",)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["address_type"] = "B"
+
+        return representation
+
+class AddressReadOnlySerializer(CountryFieldMixin, serializers.ModelSerializer):
+    """
+    Serializer class to seralize Address model
+    """
+
+    user = serializers.CharField(source="user.get_full_name", read_only=True)
+
+    class Meta:
+        model = Address
+        fields = "__all__"

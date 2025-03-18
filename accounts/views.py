@@ -1,5 +1,5 @@
 from rest_framework import  generics
-from .serializers import RegisterationSerializer
+from .serializers import RegisterationSerializer, ProfileSerializer, AddressReadOnlySerializer
 from rest_framework.permissions import AllowAny
 from django.conf import settings    
 from django.core.mail import send_mail
@@ -10,8 +10,11 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.views import APIView
-from accounts.models import CustomUser as User
-from rest_framework import ModelViewSet
+from accounts.models import CustomUser as User, Profile, Address
+from rest_framework.generics import RetrieveUpdateAPIView
+from .permissions import IsUserProfileOwner, IsUserAddressOwner
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 # class ActivateAccountView(APIView):
 #     def get(self, request, uidb64, token):
@@ -60,5 +63,17 @@ class RegisterView(generics.CreateAPIView):
         return Response({"message": "Registration successful. Please check your email to activate your account."}, 
                         status=status.HTTP_201_CREATED)
 
+class ProfileAPIView(RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsUserProfileOwner, IsAuthenticated]
+    
+    def get_object(self):
+        return Profile.objects.select_related('user').get(user=self.request.user)
 
-class ProfileViewSet()
+class AdderssViewSet(ReadOnlyModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressReadOnlySerializer
+    permission_classes = [IsUserAddressOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)

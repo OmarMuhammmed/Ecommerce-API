@@ -1,7 +1,15 @@
-from django.urls import path 
-from .views import RegisterView #, ActivateAccountView
+from django.urls import path, include 
+from .views import RegisterView , ProfileAPIView, AdderssViewSet#, ActivateAccountView
+from rest_framework import routers
+
+
+router = routers.DefaultRouter()
+router.register(r"", AdderssViewSet, basename="address")
+
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
-    # path('activate/<uidb64>/<token>/', ActivateAccountView.as_view(), name='activate'),
+    path('profile/', ProfileAPIView.as_view(), name='profile'),
+    path("profile/address/", include(router.urls)),
+    
 ]
