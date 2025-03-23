@@ -8,7 +8,10 @@ urlpatterns = [
     
     # accounts
     path('api/accounts/', include('accounts.urls')),
-    
     path('api/accounts/login/', TokenObtainPairView.as_view()),
     path('api/accounts/', include('dj_rest_auth.urls')),
+
+    # products
+    path('api/products/', include('products.urls')),
+
 ]
