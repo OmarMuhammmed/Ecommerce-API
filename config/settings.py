@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     # Apps
     'accounts',
     'products',
+    'orders',
     # Django default
     'django.contrib.admin',
     'django.contrib.auth',

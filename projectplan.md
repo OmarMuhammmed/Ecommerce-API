@@ -1,3 +1,5 @@
 - [x] anthor email service provider not (Email) or Solve probelm
 - [x] Build a ProfileViewSet and AdderssViewSet with Custom Permissions
-- [ ] Test and End accounts app 
+- [x] Test and End accounts app 
+- [x] products app
+- [] Orders app
