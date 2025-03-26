@@ -66,7 +66,7 @@ class OrderReadSerializer(serializers.ModelSerializer):
             "buyer",
             "shipping_address",
             "billing_address",
-            "payment",
+            # "payment",
             "order_items",
             "total_cost",
             "status",
