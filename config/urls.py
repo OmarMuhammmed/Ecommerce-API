@@ -17,4 +17,7 @@ urlpatterns = [
     # orders
     path('api/orders/', include('orders.urls')),
 
+    # payment
+    path('api/payment/', include('payment.urls')),
+
 ]

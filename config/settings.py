@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     'orders',
+    'payment',
     # Django default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -146,11 +147,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER') 
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# Payment settings
+# -- STRIPE -- 
+STRIPE_PUBLISHABLE_KEY  = config('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+PAYMENT_SUCCESS_URL = config("PAYMENT_SUCCESS_URL")
+PAYMENT_CANCEL_URL = config("PAYMENT_CANCEL_URL")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
