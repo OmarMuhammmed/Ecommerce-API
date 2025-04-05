@@ -14,7 +14,8 @@ SECRET_KEY = 'django-insecure-c6d!*9p2jsdyu^6&dbr8&a_67dy)ir2po6b%kwk^b2pkq4r&4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# to test stripe payment with ngrok "6255-156-201-137-99.ngrok-free.app"
+ALLOWED_HOSTS = ['6255-156-201-137-99.ngrok-free.app','127.0.0.1']
 
 
 # Application definition

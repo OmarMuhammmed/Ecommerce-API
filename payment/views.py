@@ -108,43 +108,57 @@ class StripeCheckoutSessionCreateAPIView(APIView):
         )
 
 
-# class StripeWebhookAPIView(APIView):
-#     """
-#     Stripe webhook API view to handle checkout session completed and other events.
-#     """
+class StripeWebhookAPIView(APIView):
+    """
+    Stripe webhook API view to handle checkout session completed and other events.
+    """
 
-#     def post(self, request, format=None):
-#         payload = request.body
-#         endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
-#         sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
-#         event = None
+    def post(self, request, format=None):
+        payload = request.body
+        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+        sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
+        event = None
 
-#         try:
-#             event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-#         except ValueError:
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
-#         except stripe.error.SignatureVerificationError:
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except stripe.error.SignatureVerificationError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        import json
+        event = json.loads(payload.decode('utf-8'))
+        if event["type"] == "checkout.session.completed":
+            session = event["data"]["object"]
+            customer_email = session["customer_details"]["email"]
+            order_id = session["metadata"]["order_id"]
 
-#         if event["type"] == "checkout.session.completed":
-#             session = event["data"]["object"]
-#             customer_email = session["customer_details"]["email"]
-#             order_id = session["metadata"]["order_id"]
+            print("Payment successfull")
 
-#             print("Payment successfull")
+            payment = get_object_or_404(Payment, order=order_id)
+            payment.status = "C"
+            payment.save()
 
-#             payment = get_object_or_404(Payment, order=order_id)
-#             payment.status = "C"
-#             payment.save()
+            order = get_object_or_404(Order, id=order_id)
+            order.status = "C"
+            order.save()
 
-#             order = get_object_or_404(Order, id=order_id)
-#             order.status = "C"
-#             order.save()
+            for order_item in order.order_items.all():
+                product = order_item.product
+                if product.quantity >= order_item.quantity:
+                    product.quantity -= order_item.quantity
+                    product.save()
+                else:
+                    print(f"Error: Not enough stock for {product.name}")
 
-#             # TODO - Decrease product quantity
+            send_payment_success_email_task.delay(customer_email)
 
-#             send_payment_success_email_task.delay(customer_email)
 
-#         # Can handle other events here.
+        return Response(status=status.HTTP_200_OK)
 
-#         return Response(status=status.HTTP_200_OK)
+class PaymentSuccessAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response({"message": "Payment successful."} ,status=status.HTTP_200_OK)
+
+class PaymentCancelAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response({"message": " Opps! Payment cancelled."} ,status=status.HTTP_200_OK)

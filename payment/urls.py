@@ -5,7 +5,9 @@ from payment.views import (
     CheckoutAPIView,
     PaymentViewSet,
     StripeCheckoutSessionCreateAPIView,
-    #StripeWebhookAPIView,
+    PaymentSuccessAPIView,
+    PaymentCancelAPIView,
+    StripeWebhookAPIView,
 )
 
 
@@ -19,6 +21,8 @@ urlpatterns = [
         StripeCheckoutSessionCreateAPIView.as_view(),
         name="checkout_session",
     ),
-    # path("stripe/webhook/", StripeWebhookAPIView.as_view(), name="stripe_webhook"),
+    path("stripe/webhook/", StripeWebhookAPIView.as_view(), name="stripe_webhook"),
     path("checkout/<int:pk>/", CheckoutAPIView.as_view(), name="checkout"),
+    path('checkout/sucess/',PaymentSuccessAPIView.as_view(), name='payment_success'),
+    path('checkout/cancel/',PaymentCancelAPIView.as_view(), name='payment_cancel'),
 ]
