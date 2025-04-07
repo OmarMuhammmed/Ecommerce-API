@@ -3,4 +3,10 @@
 - [x] Test and End accounts app 
 - [x] products app
 - [x] Orders app
-- [ ] payment app 
+- [ ] payment app  
+   - [x] Stripe payment gateway
+   - [x] Paypal payment gateway
+   - [X] Refactor payment app
+   - [ ] config celery and redis
+   - [ ] Swiggy for API documentation
+- [ ] dockerize the project

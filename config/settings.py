@@ -15,7 +15,11 @@ SECRET_KEY = 'django-insecure-c6d!*9p2jsdyu^6&dbr8&a_67dy)ir2po6b%kwk^b2pkq4r&4t
 DEBUG = True
 
 # to test stripe payment with ngrok "6255-156-201-137-99.ngrok-free.app"
-ALLOWED_HOSTS = ['6255-156-201-137-99.ngrok-free.app','127.0.0.1']
+# to test paypal payment with ngrok "3fae-156-201-71-243.ngrok-free.app"
+ALLOWED_HOSTS = ['6255-156-201-137-99.ngrok-free.app',
+                 '127.0.0.1',
+                 '3fae-156-201-71-243.ngrok-free.app',
+                 'localhost']
 
 
 # Application definition
@@ -155,7 +159,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-
+BACKEND_DOMAIN = config('BACKEND_DOMAIN')
 # Payment settings
 # -- STRIPE -- 
 STRIPE_PUBLISHABLE_KEY  = config('STRIPE_PUBLISHABLE_KEY')
@@ -163,3 +167,18 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 PAYMENT_SUCCESS_URL = config("PAYMENT_SUCCESS_URL")
 PAYMENT_CANCEL_URL = config("PAYMENT_CANCEL_URL")
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
+
+
+# -- PAYPAL --
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET = config('PAYPAL_SECRET')
+PAYPAL_MODE = config('PAYPAL_MODE')  # Change to 'sandbox'  # Change to 'live' for production
+
+INSTALLED_APPS += [
+    'paypal.standard.ipn',
+]
+
+# PayPal IPN (Instant Payment Notification) URL
+PAYPAL_NOTIFY_URL = config('PAYPAL_NOTIFY_URL')
+PAYPAL_RETURN_URL = config('PAYPAL_RETURN_URL')
+PAYPAL_CANCEL_URL = config('PAYPAL_CANCEL_URL')
