@@ -12,8 +12,9 @@ from payment.permissions import (
 )
 from payment.serializers import CheckoutSerializer, PaymentSerializer
 from payment.tasks import send_payment_success_email_task
+from drf_spectacular.utils import extend_schema
 
-
+@extend_schema(tags=["Payment"])
 class PaymentViewSet(ModelViewSet):
     """
     CRUD payment for an order
@@ -32,7 +33,7 @@ class PaymentViewSet(ModelViewSet):
             self.permission_classes += [IsPaymentPending]
         return super().get_permissions()
 
-
+@extend_schema(tags=["Payment"])
 class CheckoutAPIView(RetrieveUpdateAPIView):
     """
     Create, Retrieve, Update billing address, shipping address and payment of an order

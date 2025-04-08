@@ -15,10 +15,10 @@ from payment.permissions import (
     IsPaymentForOrderNotCompleted,
     DoesOrderHaveAddress,
 )
+from drf_spectacular.utils import extend_schema
 
 # Configure Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 class StripeGateway(PaymentGateway):
     def get_payment_option_code(self):
@@ -83,7 +83,7 @@ class StripeGateway(PaymentGateway):
         except (ValueError, stripe.error.SignatureVerificationError):
             return None
 
-
+@extend_schema(tags=["Payment"])
 class StripeCheckoutSessionCreateAPIView(APIView):
     permission_classes = (IsPaymentForOrderNotCompleted, DoesOrderHaveAddress)
 
@@ -95,7 +95,7 @@ class StripeCheckoutSessionCreateAPIView(APIView):
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
         return Response(result, status=status.HTTP_201_CREATED)
 
-
+@extend_schema(tags=["Payment"])
 class StripeWebhookAPIView(APIView):
     def post(self, request, format=None):
         payload = request.body
@@ -115,12 +115,12 @@ class StripeWebhookAPIView(APIView):
         
         return Response(status=status.HTTP_200_OK)
 
-
+@extend_schema(tags=["Payment"])
 class StripeSuccessAPIView(APIView):
     def get(self, request, *args, **kwargs):
         return Response({"message": "Payment successful."}, status=status.HTTP_200_OK)
 
-
+@extend_schema(tags=["Payment"])
 class StripeCancelAPIView(APIView):
     def get(self, request, *args, **kwargs):
         order_id = request.GET.get('order_id')

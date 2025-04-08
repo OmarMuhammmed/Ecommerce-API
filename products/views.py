@@ -7,8 +7,10 @@ from products.serializers import (
     ProductReadSerializer,
     ProductWriteSerializer,
 )
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=["Products"])
 class ProductCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     
     queryset = ProductCategory.objects.all()
@@ -16,6 +18,7 @@ class ProductCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
 
+@extend_schema(tags=["Products"])
 class ProductViewSet(viewsets.ModelViewSet):
     """
     CRUD products

@@ -15,7 +15,9 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from .permissions import IsUserProfileOwner, IsUserAddressOwner
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(tags=['Accounts'])
 class ActivateAccountView(APIView):
     def get(self, request, uidb64, token):
         try:
@@ -35,7 +37,7 @@ class ActivateAccountView(APIView):
             return Response({"error": "Invalid activation link."}, 
                             status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(tags=['Accounts'])
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterationSerializer
     permission_classes = [AllowAny]
@@ -63,6 +65,7 @@ class RegisterView(generics.CreateAPIView):
         return Response({"message": "Registration successful. Please check your email to activate your account."}, 
                         status=status.HTTP_201_CREATED)
 
+@extend_schema(tags=['Accounts'])
 class ProfileAPIView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsUserProfileOwner, IsAuthenticated]
@@ -70,6 +73,7 @@ class ProfileAPIView(RetrieveUpdateAPIView):
     def get_object(self):
         return Profile.objects.select_related('user').get(user=self.request.user)
 
+@extend_schema(tags=['Accounts'])
 class AdderssViewSet(ReadOnlyModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressReadOnlySerializer

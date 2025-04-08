@@ -7,6 +7,6 @@
    - [x] Stripe payment gateway
    - [x] Paypal payment gateway
    - [X] Refactor payment app
-   - [ ] config celery and redis
-   - [ ] Swiggy for API documentation
-- [ ] dockerize the project
+   - [x] config celery and redis
+   - [X] Swiggr for API documentation
+- [ ] dockerize the system

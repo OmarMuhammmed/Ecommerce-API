@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    'drf_spectacular',
     
 ]
 
@@ -107,8 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # -- REST FRAMEWORK --- 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',   
     ),
 }
 
@@ -159,26 +161,51 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-BACKEND_DOMAIN = config('BACKEND_DOMAIN')
+BACKEND_DOMAIN = 'http://localhost:8000'
 # Payment settings
 # -- STRIPE -- 
 STRIPE_PUBLISHABLE_KEY  = config('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
-PAYMENT_SUCCESS_URL = config("PAYMENT_SUCCESS_URL")
-PAYMENT_CANCEL_URL = config("PAYMENT_CANCEL_URL")
+
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
 
 
 # -- PAYPAL --
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 PAYPAL_SECRET = config('PAYPAL_SECRET')
-PAYPAL_MODE = config('PAYPAL_MODE')  # Change to 'sandbox'  # Change to 'live' for production
+PAYPAL_MODE = config('PAYPAL_MODE')  # Change to 'live' for production
 
 INSTALLED_APPS += [
     'paypal.standard.ipn',
 ]
 
 # PayPal IPN (Instant Payment Notification) URL
-PAYPAL_NOTIFY_URL = config('PAYPAL_NOTIFY_URL')
-PAYPAL_RETURN_URL = config('PAYPAL_RETURN_URL')
-PAYPAL_CANCEL_URL = config('PAYPAL_CANCEL_URL')
+PAYPAL_NOTIFY_URL = 'http://localhost:8000/api/payment/paypal/webhook/'
+PAYPAL_RETURN_URL = 'http://localhost:8000/api/payment/paypal/success/'
+PAYPAL_CANCEL_URL = 'http://localhost:8000/api/payment/paypal/cancel/'
+
+## CELERY SETTINGS
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_TIMEZONE = 'UTC'
+
+
+# Redis settings for caching and Celery
+REDIS_BACKEND='redis://redis:6379/0'
+
+
+# SWAGGER SETTINGS
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'E-commerce API',
+    'DESCRIPTION': 'Ecommerce API with Highly Customizable Features and Performance and Clean Code ',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,
+    'POSTPROCESSING_HOOKS': ['utils.add_accounts_tag.add_accounts_tag',
+                             'utils.remove_api_tag.remove_api_tag',
+                             'utils.exclude_endpoints.exclude_schema_endpoints'],
+    
+}

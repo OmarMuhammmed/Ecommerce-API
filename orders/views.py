@@ -12,8 +12,10 @@ from orders.serializers import (
     OrderReadSerializer,
     OrderWriteSerializer,
 )
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=["Orders"])
 class OrderItemViewSet(viewsets.ModelViewSet):
     """
     CRUD order items that are associated with the current order id.
@@ -38,7 +40,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
         return super().get_permissions()
 
-
+@extend_schema(tags=["Orders"])
 class OrderViewSet(viewsets.ModelViewSet):
     """
     CRUD orders of a user

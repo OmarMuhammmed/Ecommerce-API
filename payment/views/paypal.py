@@ -14,6 +14,7 @@ from payment.permissions import (
     IsPaymentForOrderNotCompleted,
     DoesOrderHaveAddress,
 )
+from drf_spectacular.utils import extend_schema
 
 # Configure PayPal SDK
 paypalrestsdk.configure({
@@ -21,7 +22,6 @@ paypalrestsdk.configure({
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_SECRET
 })
-
 
 class PayPalGateway(PaymentGateway):
     """PayPal payment gateway implementation"""
@@ -90,6 +90,7 @@ class PayPalGateway(PaymentGateway):
         return payment.execute({"payer_id": payer_id})
 
 
+@extend_schema(tags=["Payment"])
 class PayPalCheckoutSessionCreateAPIView(APIView):
     permission_classes = (IsPaymentForOrderNotCompleted, DoesOrderHaveAddress)
 
@@ -105,6 +106,7 @@ class PayPalCheckoutSessionCreateAPIView(APIView):
         return Response(result, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(tags=["Payment"])
 class PayPalSuccessAPIView(APIView):
     def get(self, request, *args, **kwargs):
         payment_id = request.GET.get('paymentId')
@@ -123,6 +125,7 @@ class PayPalSuccessAPIView(APIView):
             return Response({"error": "Payment execution failed"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=["Payment"])
 class PayPalCancelAPIView(APIView):
     def get(self, request, *args, **kwargs):
         order_id = request.GET.get('order_id')
@@ -131,6 +134,7 @@ class PayPalCancelAPIView(APIView):
         return Response({"message": "Oops! Payment cancelled."}, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=["Payment"])
 class PayPalWebhookAPIView(APIView):
     """
     PayPal webhook API view to handle payment events
