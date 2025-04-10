@@ -16,9 +16,12 @@ from .permissions import IsUserProfileOwner, IsUserAddressOwner
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from drf_spectacular.utils import extend_schema
+from rest_framework.throttling import ScopedRateThrottle
 
 @extend_schema(tags=['Accounts'])
 class ActivateAccountView(APIView):
+    throttle_classes = ScopedRateThrottle
+    throttle_scope = 'register_active'
     def get(self, request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
@@ -41,6 +44,8 @@ class ActivateAccountView(APIView):
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterationSerializer
     permission_classes = [AllowAny]
+    throttle_classes = ScopedRateThrottle
+    throttle_scope = 'register_active'
 
     def send_activation_email(self, request, user, email):
         uid = urlsafe_base64_encode(force_bytes(user.pk))

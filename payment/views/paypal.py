@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from .base import PaymentGateway
 from .core import OrderProcessor
@@ -14,7 +15,7 @@ from payment.permissions import (
     IsPaymentForOrderNotCompleted,
     DoesOrderHaveAddress,
 )
-from drf_spectacular.utils import extend_schema
+from payment.throttling import PaymentSessionCreateThrottle
 
 # Configure PayPal SDK
 paypalrestsdk.configure({
@@ -93,6 +94,7 @@ class PayPalGateway(PaymentGateway):
 @extend_schema(tags=["Payment"])
 class PayPalCheckoutSessionCreateAPIView(APIView):
     permission_classes = (IsPaymentForOrderNotCompleted, DoesOrderHaveAddress)
+    throttle_classes = PaymentSessionCreateThrottle
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, id=self.kwargs.get("order_id"))

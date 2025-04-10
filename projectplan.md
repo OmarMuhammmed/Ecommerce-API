@@ -1,12 +1,17 @@
+- [ ] Design Architecture  
+- [ ] Design Database
+- [x] Start Django Project
 - [x] anthor email service provider not (Email) or Solve probelm
 - [x] Build a ProfileViewSet and AdderssViewSet with Custom Permissions
 - [x] Test and End accounts app 
-- [x] products app
+- [x] products app 
+    - [x] Search Functionality with Rate Limiting
 - [x] Orders app
-- [ ] payment app  
+- [X] payment app  
    - [x] Stripe payment gateway
    - [x] Paypal payment gateway
    - [X] Refactor payment app
    - [x] config celery and redis
    - [X] Swiggr for API documentation
-- [ ] dockerize the system
+- [ ] dockerize the system with a Postgres database server and redis server and celery worker
+

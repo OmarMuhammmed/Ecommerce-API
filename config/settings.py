@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_filters',    
     
 ]
 
@@ -112,6 +113,25 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',   
     ),
+
+    # -- Rate limiting --
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day', 
+        'user': '1000/day',
+        'register_active' :'1/minute',
+        'create_order' : '5/minute',
+        'search_filiter': '10/minute',
+        'payment_session_create': '1/minute',
+    },
+    # -- Search and filter --
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+
 }
 
 # Internationalization
@@ -198,7 +218,6 @@ REDIS_BACKEND='redis://redis:6379/0'
 
 # SWAGGER SETTINGS
 
-
 SPECTACULAR_SETTINGS = {
     'TITLE': 'E-commerce API',
     'DESCRIPTION': 'Ecommerce API with Highly Customizable Features and Performance and Clean Code ',
@@ -206,6 +225,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': True,
     'POSTPROCESSING_HOOKS': ['utils.add_accounts_tag.add_accounts_tag',
                              'utils.remove_api_tag.remove_api_tag',
-                             'utils.exclude_endpoints.exclude_schema_endpoints'],
-    
-}
+                             'utils.exclude_endpoints.exclude_schema_endpoints'],    
+    }
+

@@ -7,7 +7,7 @@ class PaymentGatewayFactory:
     def get_gateway(gateway_type):
         from .paypal import PayPalGateway
         from .stripe import StripeGateway
-        """Get the appropriate gateway based on type"""
+
         gateways = {
             'stripe': StripeGateway,
             'paypal': PayPalGateway,
@@ -22,12 +22,10 @@ class PaymentGatewayFactory:
     
     @staticmethod
     def get_gateway_for_payment(payment):
-        """Get the appropriate gateway for a payment instance"""
         return PaymentGatewayFactory.get_gateway(payment.payment_option)
     
     @staticmethod
     def get_gateway_for_order(order):
-        """Get the appropriate gateway for an order based on its payment"""
         try:
             payment = Payment.objects.get(order=order)
             return PaymentGatewayFactory.get_gateway(payment.payment_option)
