@@ -1,9 +1,10 @@
 - [ ] Design Architecture  
-- [ ] Design Database
+- [x] Design Database
 - [x] Start Django Project
 - [x] anthor email service provider not (Email) or Solve probelm
-- [x] Build a ProfileViewSet and AdderssViewSet with Custom Permissions
-- [x] Test and End accounts app 
+- [x] accounts app
+    - [x] Build a ProfileViewSet and AdderssViewSet with Custom Permissions
+    - [x] Test and End accounts app 
 - [x] products app 
     - [x] Search Functionality with Rate Limiting
 - [x] Orders app

@@ -43,7 +43,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = '__all__'
     
-
 class ShippingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
     """
     Serializer class to seralize address of type shipping
@@ -63,7 +62,6 @@ class ShippingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
         representation["address_type"] = "S"
 
         return representation
-
 
 class BillingAddressSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
