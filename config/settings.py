@@ -232,3 +232,9 @@ SPECTACULAR_SETTINGS = {
                              'utils.exclude_endpoints.exclude_schema_endpoints'],    
     }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://redis:6379/1', 
+    }
+}

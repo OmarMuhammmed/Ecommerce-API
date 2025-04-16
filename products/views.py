@@ -12,15 +12,25 @@ from products.serializers import (
     ProductReadSerializer,
     ProductWriteSerializer,
 )
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+from rest_framework import permissions, viewsets
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 @extend_schema(tags=["Products"])
 class ProductCategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    
-    queryset = ProductCategory.objects.all()
-    serializer_class = ProductCategoryReadSerializer
-    permission_classes = (permissions.AllowAny,)
 
+    queryset = ProductCategory.objects.all()  
+    serializer_class = ProductCategoryReadSerializer  
+    @method_decorator(cache_page(60 * 15))  
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60 * 15))  
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 @extend_schema(tags=["Products"])
 class ProductViewSet(viewsets.ModelViewSet):
@@ -55,5 +65,14 @@ class ProductViewSet(viewsets.ModelViewSet):
             self.permission_classes = (permissions.AllowAny,)
 
         return super().get_permissions()
+
+    @method_decorator(cache_page(60 * 5))  
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60 * 5)) 
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
