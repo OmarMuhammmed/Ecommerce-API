@@ -1,4 +1,3 @@
-- [ ] Design Architecture  
 - [x] Design Database
 - [x] Start Django Project
 - [x] anthor email service provider not (Email) or Solve probelm

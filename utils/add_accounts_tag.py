@@ -1,4 +1,4 @@
-# utils.py
+
 def add_accounts_tag(result, generator, request, public):
     for path, operations in result['paths'].items():
         if path.startswith('/api/accounts/'):
