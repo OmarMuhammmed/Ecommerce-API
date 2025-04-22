@@ -5,7 +5,7 @@ A robust, scalable, and high-performance RESTful API for e-commerce platforms bu
 ## Features
 
 - **Complete E-Commerce Functionality**: Products, categories, orders, payments, user profiles, shopping carts, and more
-- **High Performance**: Optimized database queries, caching strategies, and asynchronous task processing
+- **High Performance**: Optimized database queries, caching strategies, and asynchronous task processing and Postgres Full Text Search for products 
 - **Scalability**: Docker containerization for easy deployment and scaling
 - **Authentication & Authorization**: JWT-based secure authentication system with role-based permissions
 - **Background Processing**: Celery for handling resource-intensive tasks asynchronously

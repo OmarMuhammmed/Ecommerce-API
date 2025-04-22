@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 User = get_user_model()
@@ -39,13 +41,15 @@ class Product(models.Model):
         on_delete=models.SET(get_default_product_category),
         db_index=True
     )
-    name = models.CharField(max_length=200, db_index=True)  # Add index for product name searches
+    name = models.CharField(max_length=200, db_index=True)  
     desc = models.TextField(blank=True)
+    
+    search_vector = SearchVectorField(null=True, blank=True)
     image = models.ImageField(upload_to=product_image_path, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=10)
     quantity = models.IntegerField(default=1)
 
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # Add index for timestamp queries
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -53,6 +57,8 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=['price']),  # Add index for price queries
             models.Index(fields=['quantity']),  # Add index for inventory queries
+            # Add a GIN index for the search vector
+            GinIndex(fields=['search_vector']),
         ]
 
     def __str__(self):
